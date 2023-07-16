@@ -1,0 +1,55 @@
+Install GPSD
+You can always just read that raw data, but its much nicer if you can have some Linux software prettify it. We'll try out gpsd which is a GPS-handling Daemon (background-helper)
+
+To install gpsd, make sure your Pi has an Internet connection and run the following commands from the console: 
+
+ sudo apt-get install gpsd gpsd-clients python-gps 
+Raspbian Jessie systemd service fix
+
+Note if you're using the Raspbian Jessie or later release you'll need to disable a systemd service that gpsd installs.  This service has systemd listen on a local socket and run gpsd when clients connect to it, however it will also interfere with other gpsd instances that are manually run (like in this guide).  You will need to disable the gpsd systemd service by running the following commands:
+
+ sudo systemctl stop gpsd.socket
+ sudo systemctl disable gpsd.socket
+Should you ever want to enable the default gpsd systemd service you can run these commands to restore it (but remember the rest of the steps in this guide won't work!):
+
+ sudo systemctl enable gpsd.socket
+ sudo systemctl start gpsd.socket
+ 
+ > This didn't work so far. 
+ >UART gives assigns the virtualization of ports ttyS0 or ttyAMA0
+ 
+ >boot feeds back serial1 and ttyS0
+ 
+ > attempting this /boot/cmdline.txt
+ dwc_otg.lpm_enable=0 root=PARTUUID=10f59406-02 rootfstype=ext4 
+ elevator=deadline fsck.repair=yes rootwait enable_uart=1 console=ttyS0,115200
+ 
+ > GPIO numbers - PIN 6,8,10 Transmit = pin 8 UART0_TXD, and pin 10 GPIO 15 UART_RXD
+ 
+ > sudo raspi-config - brings up the interface that will allow me to disable/enable UART
+ 
+ 
+> installed setserial to get the GPIO/SERIAL translation ports 
+sudo apt-get install setserial
+>This command should display ports: 
+setserial -g /dev/ttyS[0123]
+
+>discovered /inittab is antiquidated
+
+
+---------------------------------------------------
+Open a terminal/command line
+Type
+sudo raspi-config
+
+Select 5 Interfacing Options
+P6 Serial Options
+
+Select NO to login shell over serial...
+Select YES to serial port
+
+--------------------------------------------------
+
+
+>https://sparklers-the-makers.github.io/blog/robotics/use-neo-6m-module-with-raspberry-pi/
+> dont forget to change the blkp2 to blkp7
